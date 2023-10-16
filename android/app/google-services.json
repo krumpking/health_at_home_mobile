@@ -1,0 +1,79 @@
+{
+  "project_info": {
+    "project_number": "68308620191",
+    "project_id": "healthathome-328216",
+    "storage_bucket": "healthathome-328216.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68308620191:android:085823f19235d1c82063aa",
+        "android_client_info": {
+          "package_name": "zw.co.healthathome.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68308620191-7bvt4na9ul3fkg3s4496k07m2vem787k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "zw.co.healthathome.mobile",
+            "certificate_hash": "a30c5ac0a6645f9c095012c7282b15280e077ceb"
+          }
+        },
+        {
+          "client_id": "68308620191-b44ihqiar9brua07l1ikqcndgu9q9gs3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "zw.co.healthathome.mobile",
+            "certificate_hash": "41b6d916cb34ae3311b75db001fa7cccc3f8a504"
+          }
+        },
+        {
+          "client_id": "68308620191-h9lejcrtd61dane0du8bbqevh49acjfe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "zw.co.healthathome.mobile",
+            "certificate_hash": "6afc76dd5aace0e770fdaf697391039dfa7f8765"
+          }
+        },
+        {
+          "client_id": "68308620191-v5adso092r6j64lnintbgrvkr2qon5co.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "zw.co.healthathome.mobile",
+            "certificate_hash": "350315e6882dc1bd335cb345350cc25c7455ebe8"
+          }
+        },
+        {
+          "client_id": "68308620191-12cvpsfla4457j2221nrfit8fdgu247e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVrkrPcSg9xxLZJ5_SC215RY4Li2zE2VQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68308620191-12cvpsfla4457j2221nrfit8fdgu247e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "68308620191-h5lateatkifhta612hjevsq2kbu2kele.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.healthathomemobile.app",
+                "app_store_id": "1601263619"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
