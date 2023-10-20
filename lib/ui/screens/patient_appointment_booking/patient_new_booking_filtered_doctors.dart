@@ -33,6 +33,7 @@ class _PatientNewBookingFilteredDoctorsState
   late DoctorSearch _search = new DoctorSearch();
   late Gender _genderValue = App.doctorSearch.gender;
   late Rating _ratingValue = App.doctorSearch.rating;
+  var _informationText = 'Select from these available doctors';
 
   @override
   void initState() {
@@ -66,7 +67,14 @@ class _PatientNewBookingFilteredDoctorsState
     setState(() {
       _search.serviceIds = [App.progressBooking!.primaryService.id];
     });
-    return Utilities.searchDoctors(allDoctors, _search); // do search
+    var docs = Utilities.searchDoctors(allDoctors, _search); // do searc;
+    if (docs.length < 1) {
+      setState(() {
+        _informationText =
+            'Sorry, there are no practitioners available for the location and/or filters you have selected. However please see below all doctors available';
+      });
+    }
+    return docs;
   }
 
   @override
@@ -168,7 +176,7 @@ class _PatientNewBookingFilteredDoctorsState
                           ),
                           SizedBox(height: 16),
                           Text(
-                            'Select from these available doctors',
+                            _informationText,
                             textAlign: TextAlign.start,
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
@@ -461,6 +469,7 @@ class _PatientNewBookingFilteredDoctorsState
                                   ),
                                 ),
                                 onTap: () {
+                                  // this is the part that you need
                                   App.progressBooking!.selectedDoctor =
                                       doctorProfile;
                                   Navigator.push(context,
@@ -477,330 +486,258 @@ class _PatientNewBookingFilteredDoctorsState
                       );
                     } else if (snapshot.data!.length == 0 && _loaded) {
                       return Container(
-                        margin: EdgeInsets.only(top: 24),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: SvgPicture.asset(
-                                    'assets/icons/icon_circle_close_red.svg',
-                                    height: 32,
-                                    width: 32,
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(
-                                    'Sorry, there are no practitioners available for the location and/or filters you have selected. However please see below all doctors available',
-                                    softWrap: true,
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16,
-                                      color: App.theme.grey900,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height,
-                              child: MediaQuery.removePadding(
-                                removeTop: true,
-                                context: context,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: allDoctors.length,
-                                  itemBuilder: (context, index) {
-                                    final DoctorProfile doctorProfile =
-                                        allDoctors[index];
-                                    return GestureDetector(
-                                      child: Container(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 4),
-                                        padding: EdgeInsets.only(left: 16),
-                                        color: App.theme.white,
-                                        child: Column(
-                                          children: [
-                                            SizedBox(height: 16),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                          height: MediaQuery.of(context).size.height,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: allDoctors.length,
+                            itemBuilder: (context, index) {
+                              final DoctorProfile doctorProfile =
+                                  allDoctors[index];
+                              return GestureDetector(
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(vertical: 4),
+                                  padding: EdgeInsets.only(left: 16),
+                                  color: App.theme.white,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 16),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          CircleAvatar(
+                                            backgroundColor: App.theme.grey!
+                                                .withOpacity(0.1),
+                                            backgroundImage: doctorProfile
+                                                        .profileImg !=
+                                                    null
+                                                ? NetworkImage(
+                                                    doctorProfile.profileImg!)
+                                                : null,
+                                            radius: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.1,
+                                          ),
+                                          SizedBox(width: 16),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                CircleAvatar(
-                                                  backgroundColor: App
-                                                      .theme.grey!
-                                                      .withOpacity(0.1),
-                                                  backgroundImage: doctorProfile
-                                                              .profileImg !=
-                                                          null
-                                                      ? NetworkImage(
-                                                          doctorProfile
-                                                              .profileImg!)
-                                                      : null,
-                                                  radius: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.1,
+                                                Text(
+                                                  (doctorProfile
+                                                              .title.isNotEmpty
+                                                          ? doctorProfile.title
+                                                                  .replaceAll(
+                                                                      '.', '') +
+                                                              '. '
+                                                          : '') +
+                                                      Utilities
+                                                          .convertToTitleCase(
+                                                              doctorProfile
+                                                                  .displayName),
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 18,
+                                                    color: App.theme.grey900,
+                                                  ),
                                                 ),
-                                                SizedBox(width: 16),
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        (doctorProfile.title
-                                                                    .isNotEmpty
-                                                                ? doctorProfile
-                                                                        .title
-                                                                        .replaceAll(
-                                                                            '.',
-                                                                            '') +
-                                                                    '. '
-                                                                : '') +
-                                                            Utilities.convertToTitleCase(
-                                                                doctorProfile
-                                                                    .displayName),
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontSize: 18,
+                                                SizedBox(height: 8),
+                                                Text(
+                                                  doctorProfile.specialities
+                                                          .isNotEmpty
+                                                      ? doctorProfile
+                                                          .specialities
+                                                      : '',
+                                                  textAlign: TextAlign.start,
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w300,
+                                                    fontSize: 14,
+                                                    color: App.theme.grey400,
+                                                  ),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    SimpleStarRating(
+                                                      allowHalfRating: false,
+                                                      starCount: 5,
+                                                      rating: double.parse(
+                                                          doctorProfile.rating
+                                                              .toString()),
+                                                      size: 24,
+                                                      filledIcon: Icon(
+                                                          Icons.star,
+                                                          color: App.theme
+                                                              .btnDarkSecondary,
+                                                          size: 24),
+                                                      nonFilledIcon: Icon(
+                                                          Icons.star,
                                                           color:
-                                                              App.theme.grey900,
-                                                        ),
+                                                              App.theme.grey300,
+                                                          size: 24),
+                                                      onRated: (rate) {},
+                                                      spacing: 4,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(height: 16),
+                                      Row(
+                                        children: [
+                                          (App.progressBooking!.latitude
+                                                      .isNotEmpty &&
+                                                  App.progressBooking!.longitude
+                                                      .isNotEmpty &&
+                                                  doctorProfile.savedAddress !=
+                                                      null &&
+                                                  doctorProfile.savedAddress!
+                                                      .lat.isNotEmpty &&
+                                                  doctorProfile.savedAddress!
+                                                      .lng.isNotEmpty)
+                                              ? Expanded(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 12,
                                                       ),
-                                                      SizedBox(height: 8),
+                                                      SvgPicture.asset(
+                                                        'assets/icons/icon_map.svg',
+                                                        color:
+                                                            App.theme.turquoise,
+                                                      ),
+                                                      SizedBox(width: 8),
                                                       Text(
                                                         doctorProfile
-                                                                .specialities
-                                                                .isNotEmpty
-                                                            ? doctorProfile
-                                                                .specialities
-                                                            : '',
+                                                            .getDistance(
+                                                              LatLng(
+                                                                  double.parse(
+                                                                      doctorProfile
+                                                                          .savedAddress!
+                                                                          .lat),
+                                                                  double.parse(
+                                                                      doctorProfile
+                                                                          .savedAddress!
+                                                                          .lng)),
+                                                              LatLng(
+                                                                  double.parse(App
+                                                                      .progressBooking!
+                                                                      .latitude),
+                                                                  double.parse(App
+                                                                      .progressBooking!
+                                                                      .longitude)),
+                                                              false,
+                                                            )
+                                                            .toUpperCase(),
                                                         textAlign:
                                                             TextAlign.start,
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
                                                         style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize: 14,
-                                                          color:
-                                                              App.theme.grey400,
-                                                        ),
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          SimpleStarRating(
-                                                            allowHalfRating:
-                                                                false,
-                                                            starCount: 5,
-                                                            rating: double.parse(
-                                                                doctorProfile
-                                                                    .rating
-                                                                    .toString()),
-                                                            size: 24,
-                                                            filledIcon: Icon(
-                                                                Icons.star,
-                                                                color: App.theme
-                                                                    .btnDarkSecondary,
-                                                                size: 24),
-                                                            nonFilledIcon: Icon(
-                                                                Icons.star,
-                                                                color: App.theme
-                                                                    .grey300,
-                                                                size: 24),
-                                                            onRated: (rate) {},
-                                                            spacing: 4,
-                                                          ),
-                                                        ],
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 12,
+                                                            color: App.theme
+                                                                .turquoise),
                                                       ),
                                                     ],
                                                   ),
                                                 )
-                                              ],
-                                            ),
-                                            SizedBox(height: 16),
-                                            Row(
-                                              children: [
-                                                (App.progressBooking!
-                                                            .latitude.isNotEmpty &&
-                                                        App
-                                                            .progressBooking!
-                                                            .longitude
-                                                            .isNotEmpty &&
-                                                        doctorProfile
-                                                                .savedAddress !=
-                                                            null &&
-                                                        doctorProfile
-                                                            .savedAddress!
-                                                            .lat
-                                                            .isNotEmpty &&
-                                                        doctorProfile
-                                                            .savedAddress!
-                                                            .lng
-                                                            .isNotEmpty)
-                                                    ? Expanded(
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            SizedBox(
-                                                              width: 12,
-                                                            ),
-                                                            SvgPicture.asset(
-                                                              'assets/icons/icon_map.svg',
-                                                              color: App.theme
-                                                                  .turquoise,
-                                                            ),
-                                                            SizedBox(width: 8),
-                                                            Text(
-                                                              doctorProfile
-                                                                  .getDistance(
-                                                                    LatLng(
-                                                                        double.parse(doctorProfile
-                                                                            .savedAddress!
-                                                                            .lat),
-                                                                        double.parse(doctorProfile
-                                                                            .savedAddress!
-                                                                            .lng)),
-                                                                    LatLng(
-                                                                        double.parse(App
-                                                                            .progressBooking!
-                                                                            .latitude),
-                                                                        double.parse(App
-                                                                            .progressBooking!
-                                                                            .longitude)),
-                                                                    false,
-                                                                  )
-                                                                  .toUpperCase(),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontSize: 12,
-                                                                  color: App
-                                                                      .theme
-                                                                      .turquoise),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    : Expanded(
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            SizedBox(
-                                                              width: 12,
-                                                            ),
-                                                            SvgPicture.asset(
-                                                                'assets/icons/icon_calendar.svg'),
-                                                            SizedBox(width: 8),
-                                                            Text(
-                                                              'ALL AVAILABILITIES',
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontSize: 12,
-                                                                  color: App
-                                                                      .theme
-                                                                      .turquoise,
-                                                                  decoration:
-                                                                      TextDecoration
-                                                                          .underline),
-                                                            ),
-                                                          ],
-                                                        ),
+                                              : Expanded(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 12,
                                                       ),
-                                                Expanded(
-                                                  child: GestureDetector(
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        SvgPicture.asset(
-                                                            'assets/icons/icon_user.svg',
-                                                            height: 18,
+                                                      SvgPicture.asset(
+                                                          'assets/icons/icon_calendar.svg'),
+                                                      SizedBox(width: 8),
+                                                      Text(
+                                                        'ALL AVAILABILITIES',
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 12,
                                                             color: App.theme
-                                                                .turquoise),
-                                                        SizedBox(width: 8),
-                                                        Text(
-                                                          'VIEW PROFILE',
-                                                          textAlign:
-                                                              TextAlign.start,
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 12,
-                                                              color: App.theme
-                                                                  .turquoise,
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .underline),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    onTap: () {
-                                                      Navigator.push(context,
-                                                          MaterialPageRoute(
-                                                              builder:
-                                                                  (context) {
-                                                        return PatientViewDoctorProfile(
-                                                            doctor:
-                                                                doctorProfile);
-                                                      }));
-                                                    },
+                                                                .turquoise,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .underline),
+                                                      ),
+                                                    ],
                                                   ),
-                                                )
-                                              ],
+                                                ),
+                                          Expanded(
+                                            child: GestureDetector(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  SvgPicture.asset(
+                                                      'assets/icons/icon_user.svg',
+                                                      height: 18,
+                                                      color:
+                                                          App.theme.turquoise),
+                                                  SizedBox(width: 8),
+                                                  Text(
+                                                    'VIEW PROFILE',
+                                                    textAlign: TextAlign.start,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 12,
+                                                        color:
+                                                            App.theme.turquoise,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline),
+                                                  ),
+                                                ],
+                                              ),
+                                              onTap: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                  return PatientViewDoctorProfile(
+                                                      doctor: doctorProfile);
+                                                }));
+                                              },
                                             ),
-                                            SizedBox(height: 16),
-                                          ],
-                                        ),
+                                          )
+                                        ],
                                       ),
-                                      onTap: () {
-                                        App.progressBooking!.selectedDoctor =
-                                            doctorProfile;
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return PatientNewBookingAvailabilities(
-                                              doctorProfile: doctorProfile,
-                                              isEdit: false);
-                                        }));
-                                      },
-                                    );
-                                  },
+                                      SizedBox(height: 16),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
+                                onTap: () {
+                                  App.progressBooking!.selectedDoctor =
+                                      doctorProfile;
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return PatientNewBookingAvailabilities(
+                                        doctorProfile: doctorProfile,
+                                        isEdit: false);
+                                  }));
+                                },
+                              );
+                            },
+                          ));
                     } else {
                       return Container(
                         margin: EdgeInsets.only(top: 24),

@@ -7,16 +7,20 @@ import 'package:mobile/ui/partials/button.dart';
 import 'package:mobile/ui/partials/status_navigator_widget.dart';
 import 'package:mobile/ui/screens/home.dart';
 import 'package:mobile/ui/screens/patient_appointment_booking/patient_new_booking_visit_summary.dart';
+import 'package:mobile/ui/screens/patient_appointment_booking/patient_primary_service.dart';
 
 class PatientNewBookingChronicConditions extends StatefulWidget {
   const PatientNewBookingChronicConditions({Key? key}) : super(key: key);
 
   @override
-  _PatientNewBookingChronicConditionsState createState() => _PatientNewBookingChronicConditionsState();
+  _PatientNewBookingChronicConditionsState createState() =>
+      _PatientNewBookingChronicConditionsState();
 }
 
-class _PatientNewBookingChronicConditionsState extends State<PatientNewBookingChronicConditions> {
-  late TextEditingController chronicConditionsController = TextEditingController();
+class _PatientNewBookingChronicConditionsState
+    extends State<PatientNewBookingChronicConditions> {
+  late TextEditingController chronicConditionsController =
+      TextEditingController();
   late TextEditingController allergiesController = TextEditingController();
   bool _loading = false;
   late String _error = '';
@@ -114,26 +118,37 @@ class _PatientNewBookingChronicConditionsState extends State<PatientNewBookingCh
                       if (_error.isNotEmpty)
                         Text(
                           _error,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: App.theme.red),
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: App.theme.red),
                         ),
                       TextFormField(
                         maxLines: 5,
-                        style: TextStyle(fontSize: 18, color: App.theme.darkText),
+                        style:
+                            TextStyle(fontSize: 18, color: App.theme.darkText),
                         controller: chronicConditionsController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                             fillColor: App.theme.white,
                             filled: true,
                             hintText: 'Input text here',
-                            hintStyle: TextStyle(fontSize: 18, color: App.theme.mutedLightColor),
+                            hintStyle: TextStyle(
+                                fontSize: 18, color: App.theme.mutedLightColor),
                             contentPadding: EdgeInsets.all(16),
                             border: OutlineInputBorder(
-                                borderSide: BorderSide(color: (App.theme.grey300)!, width: 1.0),
-                                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                borderSide: BorderSide(
+                                    color: (App.theme.grey300)!, width: 1.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0))),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: (App.theme.grey300)!, width: 1.0), borderRadius: BorderRadius.circular(10.0)),
+                                borderSide: BorderSide(
+                                    color: (App.theme.grey300)!, width: 1.0),
+                                borderRadius: BorderRadius.circular(10.0)),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: (App.theme.grey300)!, width: 1.0), borderRadius: BorderRadius.circular(10.0))),
+                                borderSide: BorderSide(
+                                    color: (App.theme.grey300)!, width: 1.0),
+                                borderRadius: BorderRadius.circular(10.0))),
                       ),
                       SizedBox(height: 24),
                       Text(
@@ -148,22 +163,30 @@ class _PatientNewBookingChronicConditionsState extends State<PatientNewBookingCh
                       SizedBox(height: 16),
                       TextFormField(
                         maxLines: 5,
-                        style: TextStyle(fontSize: 18, color: App.theme.darkText),
+                        style:
+                            TextStyle(fontSize: 18, color: App.theme.darkText),
                         controller: allergiesController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                             fillColor: App.theme.white,
                             filled: true,
                             hintText: 'Input text here',
-                            hintStyle: TextStyle(fontSize: 18, color: App.theme.mutedLightColor),
+                            hintStyle: TextStyle(
+                                fontSize: 18, color: App.theme.mutedLightColor),
                             contentPadding: EdgeInsets.all(16),
                             border: OutlineInputBorder(
-                                borderSide: BorderSide(color: (App.theme.grey300)!, width: 1.0),
-                                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                borderSide: BorderSide(
+                                    color: (App.theme.grey300)!, width: 1.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0))),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: (App.theme.grey300)!, width: 1.0), borderRadius: BorderRadius.circular(10.0)),
+                                borderSide: BorderSide(
+                                    color: (App.theme.grey300)!, width: 1.0),
+                                borderRadius: BorderRadius.circular(10.0)),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: (App.theme.grey300)!, width: 1.0), borderRadius: BorderRadius.circular(10.0))),
+                                borderSide: BorderSide(
+                                    color: (App.theme.grey300)!, width: 1.0),
+                                borderRadius: BorderRadius.circular(10.0))),
                       ),
                     ],
                   ),
@@ -182,43 +205,59 @@ class _PatientNewBookingChronicConditionsState extends State<PatientNewBookingCh
                     title: 'Confirm Details',
                     iconWidget: SizedBox(),
                     onPressed: () {
-                      setState(() {
-                        _loading = true;
-                      });
-                      try {
-                        if (allergiesController.value.text.isNotEmpty) App.currentUser.patientProfile!.allergies = allergiesController.value.text;
-                        if (chronicConditionsController.value.text.isNotEmpty)
-                          App.currentUser.patientProfile!.chronicConditions = chronicConditionsController.value.text;
+                      if (App.isFromViewPractioners) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return PatientPrimaryService();
+                        }));
+                      } else {
+                        setState(() {
+                          _loading = true;
+                        });
+                        try {
+                          if (allergiesController.value.text.isNotEmpty)
+                            App.currentUser.patientProfile!.allergies =
+                                allergiesController.value.text;
+                          if (chronicConditionsController.value.text.isNotEmpty)
+                            App.currentUser.patientProfile!.chronicConditions =
+                                chronicConditionsController.value.text;
 
-                        if (allergiesController.value.text.isNotEmpty || chronicConditionsController.value.text.isNotEmpty) {
-                          App.progressBooking!.addOnService = null;
-                          ApiProvider _provider = new ApiProvider();
-                          _provider.updatePatientProfile().then((success) async {
+                          if (allergiesController.value.text.isNotEmpty ||
+                              chronicConditionsController
+                                  .value.text.isNotEmpty) {
+                            App.progressBooking!.addOnService = null;
+                            ApiProvider _provider = new ApiProvider();
+                            _provider
+                                .updatePatientProfile()
+                                .then((success) async {
+                              setState(() {
+                                _loading = false;
+                              });
+                              if (success) {
+                                await _provider.refreshUser();
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return PatientNewBookingVisitSummary();
+                                }));
+                              } else {
+                                _error = ApiResponse.message;
+                                ApiResponse.message = '';
+                              }
+                            });
+                          } else {
                             setState(() {
                               _loading = false;
                             });
-                            if (success) {
-                              await _provider.refreshUser();
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                return PatientNewBookingVisitSummary();
-                              }));
-                            } else {
-                              _error = ApiResponse.message;
-                              ApiResponse.message = '';
-                            }
-                          });
-                        } else {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return PatientNewBookingVisitSummary();
+                            }));
+                          }
+                        } catch (error) {
                           setState(() {
                             _loading = false;
                           });
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return PatientNewBookingVisitSummary();
-                          }));
                         }
-                      } catch (error) {
-                        setState(() {
-                          _loading = false;
-                        });
                       }
                     }),
           ),

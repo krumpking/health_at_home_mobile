@@ -16,10 +16,12 @@ import '../patient_appointment_summary_tracking/patient_appointment_summary.dart
 
 class PatientNewBookingPayment extends StatefulWidget {
   final Booking booking;
-  const PatientNewBookingPayment({Key? key, required this.booking}) : super(key: key);
+  const PatientNewBookingPayment({Key? key, required this.booking})
+      : super(key: key);
 
   @override
-  _PatientNewBookingPaymentState createState() => _PatientNewBookingPaymentState();
+  _PatientNewBookingPaymentState createState() =>
+      _PatientNewBookingPaymentState();
 }
 
 class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
@@ -27,7 +29,7 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
   bool _cashLoading = false;
   bool _planLoading = false;
   late String _error = '';
-  late Timer? timer;
+  var timer = null;
   late int paymentId = 0;
   late bool paymentSuccess = false;
 
@@ -38,7 +40,10 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
 
   @override
   void dispose() {
-    timer?.cancel();
+    if (timer != null) {
+      timer.cancel();
+    }
+
     super.dispose();
   }
 
@@ -49,7 +54,8 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: App.theme.turquoise50,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16.0))),
           contentPadding: EdgeInsets.all(16),
           content: Container(
             width: MediaQuery.of(context).size.width,
@@ -62,7 +68,10 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                 SizedBox(height: 24),
                 Text(
                   'Payment Failed!',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: App.theme.red),
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: App.theme.red),
                 ),
                 SizedBox(height: 16),
                 DangerRegularButton(
@@ -72,7 +81,7 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                         MaterialPageRoute(
                           builder: (context) => Home(0),
                         ),
-                            (Route<dynamic> route) => false,
+                        (Route<dynamic> route) => false,
                       );
                     }),
                 SizedBox(height: 8),
@@ -91,7 +100,8 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: App.theme.turquoise50,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16.0))),
           contentPadding: EdgeInsets.all(16),
           content: Container(
             width: MediaQuery.of(context).size.width,
@@ -104,7 +114,10 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                 SizedBox(height: 24),
                 Text(
                   'Payment Received!',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: App.theme.green),
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: App.theme.green),
                 ),
                 SizedBox(height: 16),
                 SuccessRegularButton(
@@ -114,7 +127,7 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                         MaterialPageRoute(
                           builder: (context) => Home(0),
                         ),
-                            (Route<dynamic> route) => false,
+                        (Route<dynamic> route) => false,
                       );
                     }),
                 SizedBox(height: 8),
@@ -168,7 +181,7 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                                   MaterialPageRoute(
                                     builder: (context) => Home(0),
                                   ),
-                                      (Route<dynamic> route) => false,
+                                  (Route<dynamic> route) => false,
                                 );
                               },
                             ),
@@ -199,37 +212,50 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                             });
 
                             ApiProvider provider = ApiProvider();
-                            var result = await provider.payBooking(bookingId: widget.booking.id, method: 'card');
+                            var result = await provider.payBooking(
+                                bookingId: widget.booking.id, method: 'card');
 
                             if (result != null) {
                               if (result['redirectUrl'] != null) {
                                 paymentId = result['paymentId'];
                                 App.launchURL(result['redirectUrl']);
 
-                                timer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
+                                timer = Timer.periodic(Duration(seconds: 10),
+                                    (Timer t) async {
                                   print('Timer running....');
                                   if (paymentId > 0) {
-                                    var result = await provider.checkPaymentStatus(paymentId: paymentId, type: 'booking');
+                                    var result =
+                                        await provider.checkPaymentStatus(
+                                            paymentId: paymentId,
+                                            type: 'booking');
 
-                                    if (result.containsKey('status') && result['status'] != null && int.parse(result['status'].toString()) == 3) {
+                                    if (result.containsKey('status') &&
+                                        result['status'] != null &&
+                                        int.parse(
+                                                result['status'].toString()) ==
+                                            3) {
                                       setState(() {
                                         _cardLoading = false;
                                       });
-                                      timer!.cancel();
+                                      timer.cancel();
                                       t.cancel();
                                       _successDialog();
                                     }
 
-                                    if (result.containsKey('status') && result['status'] != null && int.parse(result['status'].toString()) == 4) {
+                                    if (result.containsKey('status') &&
+                                        result['status'] != null &&
+                                        int.parse(
+                                                result['status'].toString()) ==
+                                            4) {
                                       setState(() {
                                         _cardLoading = false;
                                       });
-                                      timer!.cancel();
+                                      timer.cancel();
                                       t.cancel();
                                       _errorDialog();
                                     }
                                   } else {
-                                    timer!.cancel();
+                                    timer.cancel();
                                     t.cancel();
                                     setState(() {
                                       _cardLoading = false;
@@ -246,7 +272,8 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                         },
                         child: Container(
                           width: double.infinity,
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 30),
                           decoration: BoxDecoration(
                             color: App.theme.white,
                             borderRadius: BorderRadius.circular(8),
@@ -294,12 +321,14 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                             });
 
                             ApiProvider provider = ApiProvider();
-                            var result = await provider.payBooking(bookingId: widget.booking.id, method: 'cash');
+                            var result = await provider.payBooking(
+                                bookingId: widget.booking.id, method: 'cash');
                             if (result != null) {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => PatientNewBookingVisitRequestSuccessful(),
+                                  builder: (context) =>
+                                      PatientNewBookingVisitRequestSuccessful(),
                                 ),
                               );
                             }
@@ -311,7 +340,8 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                         },
                         child: Container(
                           width: double.infinity,
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 30),
                           decoration: BoxDecoration(
                             color: App.theme.orange,
                             borderRadius: BorderRadius.circular(8),
@@ -343,7 +373,8 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                                     width: 25,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2.5,
-                                      valueColor: AlwaysStoppedAnimation<Color>(App.theme.white!),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          App.theme.white!),
                                     ),
                                   ),
                                 ),
@@ -353,7 +384,9 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                       if (widget.booking.dependent != null &&
                           widget.booking.dependent!.isSubscriptionValid() &&
                           widget.booking.dependent!.subscription != null &&
-                          widget.booking.dependent!.subscription!.remainingVisits > 0)
+                          widget.booking.dependent!.subscription!
+                                  .remainingVisits >
+                              0)
                         InkWell(
                           onTap: () async {
                             if (!_planLoading) {
@@ -362,12 +395,14 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                               });
 
                               ApiProvider provider = ApiProvider();
-                              var result = await provider.payBooking(bookingId: widget.booking.id, method: 'plan');
+                              var result = await provider.payBooking(
+                                  bookingId: widget.booking.id, method: 'plan');
                               if (result != null) {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => PatientNewBookingVisitRequestSuccessful(),
+                                    builder: (context) =>
+                                        PatientNewBookingVisitRequestSuccessful(),
                                   ),
                                 );
                               }
@@ -379,14 +414,16 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                           },
                           child: Container(
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 30),
                             decoration: BoxDecoration(
                               color: App.theme.green,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: !_planLoading
                                 ? Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Medical Plan",
@@ -411,7 +448,9 @@ class _PatientNewBookingPaymentState extends State<PatientNewBookingPayment> {
                                       width: 25,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2.5,
-                                        valueColor: AlwaysStoppedAnimation<Color>(App.theme.white!),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                App.theme.white!),
                                       ),
                                     ),
                                   ),

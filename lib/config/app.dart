@@ -29,6 +29,7 @@ class App {
   static bool onAuthPage = false;
   static bool isLocked = false;
   static bool resumed = true;
+  static bool isFromViewPractioners = false;
   static bool setupComplete = false;
   static bool patientOnboardingComplete = false;
   static bool doctorOnboardingComplete = false;
@@ -140,7 +141,9 @@ class App {
 
   static Future<bool> getBiometricsSet() async {
     final _storage = FlutterSecureStorage();
-    return await _storage.read(key: 'biometricsEnrolled') != null ? true : false;
+    return await _storage.read(key: 'biometricsEnrolled') != null
+        ? true
+        : false;
   }
 
   static Future<bool> getSetupComplete() async {
@@ -150,12 +153,16 @@ class App {
 
   static Future<bool> getPatientOnboardingComplete() async {
     final _storage = FlutterSecureStorage();
-    return await _storage.read(key: 'patientOnboardingComplete') != null ? true : false;
+    return await _storage.read(key: 'patientOnboardingComplete') != null
+        ? true
+        : false;
   }
 
   static Future<bool> getDoctorOnboardingComplete() async {
     final _storage = FlutterSecureStorage();
-    return await _storage.read(key: 'doctorOnboardingComplete') != null ? true : false;
+    return await _storage.read(key: 'doctorOnboardingComplete') != null
+        ? true
+        : false;
   }
 
   static Future<String?> getPasscode() async {

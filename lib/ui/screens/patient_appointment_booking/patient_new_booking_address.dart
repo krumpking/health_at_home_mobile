@@ -444,7 +444,6 @@ class _PatientNewBookingAddressState extends State<PatientNewBookingAddress> {
             ),
           ),
         ),
-        //TODO MAKE SURE THIS BOTTON NAVIGATION IS SHOWING WHETHER OR NOT LOCATION IS GRANTED
         bottomNavigationBar: BottomAppBar(
           color: Colors.transparent,
           child: locationGranted
@@ -491,7 +490,7 @@ class _PatientNewBookingAddressState extends State<PatientNewBookingAddress> {
                                 App.progressBooking!.addressNotes =
                                     additionalController.value.text;
 
-                              if (widget.isEdit) {
+                              if (widget.isEdit || App.isFromViewPractioners) {
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
                                   return PatientNewBookingVisitSummary();

@@ -23,10 +23,12 @@ class PatientNewBookingVisitSummary extends StatefulWidget {
   const PatientNewBookingVisitSummary({Key? key}) : super(key: key);
 
   @override
-  _PatientNewBookingVisitSummaryState createState() => _PatientNewBookingVisitSummaryState();
+  _PatientNewBookingVisitSummaryState createState() =>
+      _PatientNewBookingVisitSummaryState();
 }
 
-class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSummary> {
+class _PatientNewBookingVisitSummaryState
+    extends State<PatientNewBookingVisitSummary> {
   final chronicConditionsController = TextEditingController();
   final allergiesController = TextEditingController();
   final oCcy = new NumberFormat("#,##0.00", "en_US");
@@ -39,7 +41,8 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
     if ((App.currentUser.patientProfile!.referralCode != null &&
             App.currentUser.patientProfile!.referralCode!.isUsed &&
             !App.currentUser.patientProfile!.referralCode!.selfRedeemed) ||
-        (App.currentUser.patientProfile!.referredCode != null && App.currentUser.patientProfile!.referredCode!.isUsed)) {
+        (App.currentUser.patientProfile!.referredCode != null &&
+            App.currentUser.patientProfile!.referredCode!.isUsed)) {
       setState(() {
         App.progressBooking!.totalPrice = total - App.settings!.shareDiscount;
       });
@@ -49,22 +52,27 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
   }
 
   Future<void> checkForCovid() async {
-    if ((App.progressBooking!.bookingReason!.isCovidPositive || App.progressBooking!.bookingReason!.suspectsCovidPositive) &&
+    if ((App.progressBooking!.bookingReason!.isCovidPositive ||
+            App.progressBooking!.bookingReason!.suspectsCovidPositive) &&
         App.progressBooking!.primaryService.addOnServiceId != null) {
       if (App.progressBooking!.addOnService != null) {
         App.progressBooking!.addOnService = null;
-        App.progressBooking!.totalPrice -= App.progressBooking!.addOnService!.price;
+        App.progressBooking!.totalPrice -=
+            App.progressBooking!.addOnService!.price;
       }
 
-      var covidService = Utilities.findServiceById(App.progressBooking!.primaryService.addOnServiceId!);
+      var covidService = Utilities.findServiceById(
+          App.progressBooking!.primaryService.addOnServiceId!);
       if (covidService != null) {
-        if (!Utilities.serviceIsInList(App.progressBooking!.secondaryServices, covidService)) {
+        if (!Utilities.serviceIsInList(
+            App.progressBooking!.secondaryServices, covidService)) {
           App.progressBooking!.addOnService = covidService;
           App.progressBooking!.totalPrice += covidService.price;
         }
       }
     } else {
-      App.progressBooking!.totalPrice = App.progressBooking!.isReview && App.progressBooking!.primaryService.reviewPrice > 0
+      App.progressBooking!.totalPrice = App.progressBooking!.isReview &&
+              App.progressBooking!.primaryService.reviewPrice > 0
           ? App.progressBooking!.primaryService.reviewPrice
           : App.progressBooking!.primaryService.price;
       for (var i = 0; i < App.progressBooking!.secondaryServices.length; i++) {
@@ -81,7 +89,8 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: App.theme.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16.0))),
           contentPadding: EdgeInsets.all(16),
           content: Container(
             width: MediaQuery.of(context).size.width,
@@ -94,16 +103,22 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                 SizedBox(height: 24),
                 Text(
                   'Progress will be lost',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: App.theme.grey900),
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: App.theme.grey900),
                 ),
                 SizedBox(height: 8),
                 Text(
                   'Are you sure you want to exit/go back? You will lose any progress you have made to this point.',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: App.theme.grey500),
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: App.theme.grey500),
                 ),
                 SizedBox(height: 16),
-                SuccessRegularButton(
-                    title: 'Continue',
+                DangerRegularButton(
+                    title: 'Yes, go to home page',
                     onPressed: () {
                       App.progressBooking = Booking.init();
                       Navigator.of(context).pushAndRemoveUntil(
@@ -117,7 +132,10 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                 GestureDetector(
                   child: Text(
                     'Keep current progress',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: App.theme.red),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: App.theme.red),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -196,7 +214,8 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                         ),
                       ),
                       SizedBox(height: 24),
-                      App.progressBooking!.bookingCriteria == BookingCriteria.ASAP
+                      App.progressBooking!.bookingCriteria ==
+                              BookingCriteria.ASAP
                           ? Text(
                               'Visit Type: Urgent Visit',
                               textAlign: TextAlign.start,
@@ -210,23 +229,41 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 CircleAvatar(
-                                  backgroundColor: App.theme.grey!.withOpacity(0.1),
-                                  backgroundImage: App.progressBooking!.selectedDoctor!.profileImg != null
-                                      ? NetworkImage(App.progressBooking!.selectedDoctor!.profileImg!)
+                                  backgroundColor:
+                                      App.theme.grey!.withOpacity(0.1),
+                                  backgroundImage: App.progressBooking!
+                                              .selectedDoctor!.profileImg !=
+                                          null
+                                      ? NetworkImage(App.progressBooking!
+                                          .selectedDoctor!.profileImg!)
                                       : null,
-                                  radius: MediaQuery.of(context).size.width * 0.1,
+                                  radius:
+                                      MediaQuery.of(context).size.width * 0.1,
                                 ),
                                 SizedBox(width: 16),
                                 Expanded(
                                   flex: 3,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        ((App.progressBooking!.selectedDoctor != null && App.progressBooking!.selectedDoctor!.title.isNotEmpty)
-                                                ? App.progressBooking!.selectedDoctor!.title.replaceAll('.', '') + '. '
+                                        ((App.progressBooking!.selectedDoctor !=
+                                                        null &&
+                                                    App
+                                                        .progressBooking!
+                                                        .selectedDoctor!
+                                                        .title
+                                                        .isNotEmpty)
+                                                ? App.progressBooking!
+                                                        .selectedDoctor!.title
+                                                        .replaceAll('.', '') +
+                                                    '. '
                                                 : '') +
-                                            Utilities.convertToTitleCase(App.progressBooking!.selectedDoctor!.displayName),
+                                            Utilities.convertToTitleCase(App
+                                                .progressBooking!
+                                                .selectedDoctor!
+                                                .displayName),
                                         textAlign: TextAlign.start,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
@@ -243,10 +280,13 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                                               fontWeight: FontWeight.w600,
                                               fontSize: 16,
                                               color: App.theme.turquoise,
-                                              decoration: TextDecoration.underline),
+                                              decoration:
+                                                  TextDecoration.underline),
                                         ),
                                         onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
                                             return PatientNewBookingFilteredDoctors();
                                           }));
                                         },
@@ -299,10 +339,14 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                               'Edit',
                               textAlign: TextAlign.start,
                               style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16, color: App.theme.turquoise, decoration: TextDecoration.underline),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: App.theme.turquoise,
+                                  decoration: TextDecoration.underline),
                             ),
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
                                 return PatientNewBookingAddress(isEdit: true);
                               }));
                             },
@@ -310,7 +354,8 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                         ],
                       ),
                       SizedBox(height: 24),
-                      if (App.progressBooking!.bookingCriteria == BookingCriteria.SELECT_PROVIDERS)
+                      if (App.progressBooking!.bookingCriteria ==
+                          BookingCriteria.SELECT_PROVIDERS)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -328,12 +373,16 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  DateFormat.E().format(App.progressBooking!.selectedDate) +
+                                  DateFormat.E().format(
+                                          App.progressBooking!.selectedDate) +
                                       ', ' +
-                                      DateFormat.MMM().format(App.progressBooking!.selectedDate) +
+                                      DateFormat.MMM().format(
+                                          App.progressBooking!.selectedDate) +
                                       ' ' +
-                                      DateFormat.d().format(App.progressBooking!.selectedDate) +
-                                      Utilities.getDayOfMonthSuffix(App.progressBooking!.selectedDate.day) +
+                                      DateFormat.d().format(
+                                          App.progressBooking!.selectedDate) +
+                                      Utilities.getDayOfMonthSuffix(App
+                                          .progressBooking!.selectedDate.day) +
                                       ', ' +
                                       App.progressBooking!.startTime!,
                                   textAlign: TextAlign.start,
@@ -343,21 +392,29 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                                     color: App.theme.grey600,
                                   ),
                                 ),
-                                if(App.progressBooking!.bookingCriteria != BookingCriteria.ASAP)
-                                GestureDetector(
-                                  child: Text(
-                                    'Edit',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600, fontSize: 16, color: App.theme.turquoise, decoration: TextDecoration.underline),
+                                if (App.progressBooking!.bookingCriteria !=
+                                    BookingCriteria.ASAP)
+                                  GestureDetector(
+                                    child: Text(
+                                      'Edit',
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                          color: App.theme.turquoise,
+                                          decoration: TextDecoration.underline),
+                                    ),
+                                    onTap: () {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return PatientNewBookingAvailabilities(
+                                          doctorProfile: App.progressBooking!
+                                              .selectedDoctor as DoctorProfile,
+                                          isEdit: true,
+                                        );
+                                      }));
+                                    },
                                   ),
-                                  onTap: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                      return PatientNewBookingAvailabilities(
-                                          doctorProfile: App.progressBooking!.selectedDoctor as DoctorProfile, isEdit: true,);
-                                    }));
-                                  },
-                                ),
                               ],
                             ),
                             SizedBox(height: 24),
@@ -380,7 +437,10 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                           children: [
                             Flexible(
                               child: Text(
-                                App.progressBooking!.primaryService.name + (App.progressBooking!.isReview ? ' (Review)' : ''),
+                                App.progressBooking!.primaryService.name +
+                                    (App.progressBooking!.isReview
+                                        ? ' (Review)'
+                                        : ''),
                                 textAlign: TextAlign.start,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w400,
@@ -392,7 +452,10 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                             ),
                             SizedBox(width: 10),
                             Text(
-                              App.progressBooking!.isReview && App.progressBooking!.primaryService.reviewPrice > 0
+                              App.progressBooking!.isReview &&
+                                      App.progressBooking!.primaryService
+                                              .reviewPrice >
+                                          0
                                   ? '\$${oCcy.format(App.progressBooking!.primaryService.reviewPrice)}'
                                   : '\$${oCcy.format(App.progressBooking!.primaryService.price)}',
                               textAlign: TextAlign.start,
@@ -413,13 +476,17 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                           child: ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: App.progressBooking!.secondaryServices.length,
+                            itemCount:
+                                App.progressBooking!.secondaryServices.length,
                             itemBuilder: (context, index) {
-                              Service service = App.progressBooking!.secondaryServices[index];
+                              Service service =
+                                  App.progressBooking!.secondaryServices[index];
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Flexible(
@@ -480,16 +547,23 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                             ],
                           ),
                         ),
-                      if ((App.currentUser.patientProfile!.referralCode != null &&
-                              App.currentUser.patientProfile!.referralCode!.isUsed &&
-                              !App.currentUser.patientProfile!.referralCode!.selfRedeemed) ||
-                          (App.currentUser.patientProfile!.referredCode != null && App.currentUser.patientProfile!.referredCode!.isUsed))
+                      if ((App.currentUser.patientProfile!.referralCode !=
+                                  null &&
+                              App.currentUser.patientProfile!.referralCode!
+                                  .isUsed &&
+                              !App.currentUser.patientProfile!.referralCode!
+                                  .selfRedeemed) ||
+                          (App.currentUser.patientProfile!.referredCode !=
+                                  null &&
+                              App.currentUser.patientProfile!.referredCode!
+                                  .isUsed))
                         Column(
                           children: [
                             SizedBox(height: 8),
                             Container(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'Referral Discount',
@@ -587,8 +661,11 @@ class _PatientNewBookingVisitSummaryState extends State<PatientNewBookingVisitSu
                                 ApiProvider _provider = new ApiProvider();
                                 var booking = await _provider.createBooking();
                                 if (booking != null) {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                    return PatientNewBookingPayment(booking: booking); //PatientNewBookingVisitRequestSuccessful();
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return PatientNewBookingPayment(
+                                        booking:
+                                            booking); //PatientNewBookingVisitRequestSuccessful();
                                   }));
                                 } else {
                                   setState(() {

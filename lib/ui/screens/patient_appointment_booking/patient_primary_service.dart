@@ -13,6 +13,7 @@ import 'package:mobile/ui/screens/auth/login.dart';
 import 'package:mobile/ui/screens/home.dart';
 import 'package:mobile/ui/screens/patient/booking/new_booking.dart';
 import 'package:mobile/ui/screens/patient_appointment_booking/patient_new_booking_address.dart';
+import 'package:mobile/ui/screens/patient_appointment_booking/patient_new_booking_visit_summary.dart';
 import 'package:mobile/ui/screens/patient_appointment_booking/patient_secondary_service.dart';
 
 import '../auth/verify.code.dart';
@@ -30,11 +31,19 @@ class _PatientPrimaryServiceState extends State<PatientPrimaryService> {
   List<Service> _services = <Service>[];
   bool _loading = true;
   String _error = '';
+  late NavigatorState _navigator;
 
   @override
   void initState() {
     _initPage();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _navigator = Navigator.of(context);
+
+    super.didChangeDependencies();
   }
 
   Future<void> _initPage() async {
@@ -133,7 +142,8 @@ class _PatientPrimaryServiceState extends State<PatientPrimaryService> {
                             child: SizedBox(
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.5,
-                                valueColor: AlwaysStoppedAnimation<Color>(App.theme.turquoise!.withOpacity(0.5)),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    App.theme.turquoise!.withOpacity(0.5)),
                               ),
                               height: MediaQuery.of(context).size.height * 0.03,
                               width: MediaQuery.of(context).size.height * 0.03,
@@ -179,26 +189,54 @@ class _PatientPrimaryServiceState extends State<PatientPrimaryService> {
                                 itemCount: _services.length,
                                 itemBuilder: (context, index) {
                                   Service currentService = _services[index];
-                                  if (!currentService.isPrimary) return Container();
+                                  if (!currentService.isPrimary)
+                                    return Container();
                                   return PrimaryServiceListCard(
                                       title: currentService.name,
-                                      price: '\$${oCcy.format(currentService.price)}',
-                                      onPressed: () {
-                                        App.progressBooking!.primaryService = currentService;
-                                        if (currentService.additionalServices.length < 1) {
-                                          App.progressBooking!.totalPrice = currentService.price;
+                                      price:
+                                          '\$${oCcy.format(currentService.price)}',
+                                      onPressed: () async {
+                                        App.progressBooking!.primaryService =
+                                            currentService;
+                                        if (currentService
+                                                .additionalServices.length <
+                                            1) {
+                                          App.progressBooking!.totalPrice =
+                                              currentService.price;
                                         }
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                          if (App.progressBooking!.bookingFlow == BookingFlow.HOME_PLUS) {
-                                            return (currentService.additionalServices.length > 0)
-                                                ? PatientSecondaryService(primaryService: currentService)
-                                                : PatientNewBookingAddress(isEdit: false);
+
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          if (App.progressBooking!
+                                                  .bookingFlow ==
+                                              BookingFlow.HOME_PLUS) {
+                                            return (currentService
+                                                        .additionalServices
+                                                        .length >
+                                                    0)
+                                                ? PatientSecondaryService(
+                                                    primaryService:
+                                                        currentService)
+                                                : PatientNewBookingAddress(
+                                                    isEdit: false);
                                           } else {
-                                            return (currentService.additionalServices.length > 0)
-                                                ? PatientSecondaryService(primaryService: currentService)
+                                            return (currentService
+                                                        .additionalServices
+                                                        .length >
+                                                    0)
+                                                ? PatientSecondaryService(
+                                                    primaryService:
+                                                        currentService)
                                                 : App.isLoggedIn
-                                                    ? (User.isAuthentic(App.currentUser) && !App.currentUser.isActive)
-                                                        ? VerifyCode(uuid: App.currentUser.uuid)
+                                                    ? (User.isAuthentic(App
+                                                                .currentUser) &&
+                                                            !App.currentUser
+                                                                .isActive)
+                                                        ? VerifyCode(
+                                                            uuid: App
+                                                                .currentUser
+                                                                .uuid)
                                                         : PatientAppointmentNewBooking()
                                                     : Login(goBack: true);
                                           }

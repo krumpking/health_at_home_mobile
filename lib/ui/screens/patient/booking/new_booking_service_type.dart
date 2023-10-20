@@ -11,10 +11,12 @@ class PatientAppointmentNewBookingServiceType extends StatefulWidget {
   const PatientAppointmentNewBookingServiceType({Key? key}) : super(key: key);
 
   @override
-  _PatientAppointmentNewBookingServiceTypeState createState() => _PatientAppointmentNewBookingServiceTypeState();
+  _PatientAppointmentNewBookingServiceTypeState createState() =>
+      _PatientAppointmentNewBookingServiceTypeState();
 }
 
-class _PatientAppointmentNewBookingServiceTypeState extends State<PatientAppointmentNewBookingServiceType> {
+class _PatientAppointmentNewBookingServiceTypeState
+    extends State<PatientAppointmentNewBookingServiceType> {
   @override
   void initState() {
     super.initState();
@@ -74,11 +76,14 @@ class _PatientAppointmentNewBookingServiceTypeState extends State<PatientAppoint
                 ),
                 SizedBox(height: 8),
                 PatientSelectListCard(
-                  title: 'Browse Service Providers',
+                  title: 'Select Primary Service',
                   onPressed: () {
-                    App.progressBooking!.bookingCriteria = BookingCriteria.SELECT_PROVIDERS;
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      if (App.progressBooking!.bookingFlow == BookingFlow.HOME_PLUS) {
+                    App.progressBooking!.bookingCriteria =
+                        BookingCriteria.SELECT_PROVIDERS;
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      if (App.progressBooking!.bookingFlow ==
+                          BookingFlow.HOME_PLUS) {
                         return PatientPrimaryService();
                       } else {
                         return PatientNewBookingAddress(isEdit: false);
@@ -91,8 +96,10 @@ class _PatientAppointmentNewBookingServiceTypeState extends State<PatientAppoint
                   title: 'Book an Urgent Visit',
                   onPressed: () {
                     App.progressBooking!.bookingCriteria = BookingCriteria.ASAP;
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      if (App.progressBooking!.bookingFlow == BookingFlow.HOME_PLUS) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      if (App.progressBooking!.bookingFlow ==
+                          BookingFlow.HOME_PLUS) {
                         return PatientPrimaryService();
                       } else {
                         return PatientNewBookingAddress(isEdit: false);
