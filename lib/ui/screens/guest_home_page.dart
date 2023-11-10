@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +10,7 @@ import 'package:mobile/ui/screens/auth/login.dart';
 import 'package:mobile/ui/screens/patient/booking/new_booking_someone_else.dart';
 import 'package:mobile/ui/screens/patient_medical_profile/patient_medical_profile_visit_history.dart';
 import 'package:mobile/ui/screens/subsctriptions/subscription.list.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../models/booking/booking.dart';
 import '../../models/user/user.dart';
@@ -31,6 +33,7 @@ class _GuestHomePage extends State<GuestHomePage> {
   bool _bookingsLoading = false;
   bool _servicesLoading = true;
   late String _bookingsError = '';
+  bool _locationPermission = false;
 
   @override
   void initState() {
@@ -46,6 +49,10 @@ class _GuestHomePage extends State<GuestHomePage> {
 
   Future<void> initPage() async {
     loadBookings();
+    if (await Permission.location.isGranted) {
+      _locationPermission = true;
+      setState(() {});
+    }
   }
 
   Future<void> loadBookings() async {
@@ -97,39 +104,53 @@ class _GuestHomePage extends State<GuestHomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Hi${App.isLoggedIn ? ' ' + App.currentUser.firstName : ''}, Welcome!",
+                      _locationPermission
+                          ? "Hi${App.isLoggedIn ? ' ' + App.currentUser.firstName : ''}, Welcome!"
+                          : "ENABLE LOCATION PERMISSIONS",
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                        color: App.theme.grey800,
+                        fontSize: _locationPermission ? 20 : 18,
+                        color: _locationPermission
+                            ? App.theme.grey800
+                            : Colors.red,
                       ),
                     ),
                     //SvgPicture.asset("assets/icons/logo_small.svg"),
                   ],
                 ),
                 Text(
-                  'Get a doctor to your door step.',
+                  _locationPermission
+                      ? 'Get a doctor to your door step.'
+                      : 'For best app experience',
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 16,
-                    color: App.theme.turquoise,
+                    color:
+                        _locationPermission ? App.theme.turquoise : Colors.red,
                   ),
                 ),
                 SizedBox(height: 16),
                 !App.isLoggedIn
                     ? Column(
                         children: [
-                          PrimaryRegularButton(
-                              title: "Login / Register",
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Login()),
-                                );
-                              }),
+                          _locationPermission
+                              ? PrimaryRegularButton(
+                                  title: "Login / Register",
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Login()),
+                                    );
+                                  })
+                              : PrimaryRegularButton(
+                                  title: "Open App permissions settings",
+                                  onPressed: () {
+                                    AppSettings.openAppSettings(
+                                        type: AppSettingsType.location);
+                                  }),
                         ],
                       )
                     : _bookingsLoading

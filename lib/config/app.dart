@@ -126,7 +126,7 @@ class App {
 
   static Future<String?> getToken() async {
     final _storage = FlutterSecureStorage();
-    return await _storage.read(key: 'token');
+    return await _storage.read(key: 'accessToken');
   }
 
   static Future<String?> getTempPasscode() async {

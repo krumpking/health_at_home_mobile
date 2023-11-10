@@ -84,7 +84,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                       children: [
                         Text(
                           error,
-                          style: TextStyle(fontSize: MediaQuery.of(context).size.height * 0.016, color: Colors.red),
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.016,
+                              color: Colors.red),
                         ),
                         SizedBox(height: 16),
                       ],
@@ -92,7 +95,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                   SizedBox(height: 6),
                   Text(
                     'New Password',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: App.theme.grey600),
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: App.theme.grey600),
                   ),
                   SizedBox(height: 4),
                   TextFormField(
@@ -120,21 +126,31 @@ class _ResetPasswordState extends State<ResetPassword> {
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
                         icon: _obscureText
-                            ? Icon(Icons.visibility_rounded, color: App.theme.mutedLightColor)
-                            : Icon(Icons.visibility_off_rounded, color: App.theme.turquoise),
+                            ? Icon(Icons.visibility_rounded,
+                                color: App.theme.mutedLightColor)
+                            : Icon(Icons.visibility_off_rounded,
+                                color: App.theme.turquoise),
                         onPressed: () => {_toggle()},
                       ),
                       fillColor: App.theme.white,
                       filled: true,
                       hintText: 'Type your password',
-                      hintStyle: TextStyle(fontSize: 16, color: App.theme.mutedLightColor),
+                      hintStyle: TextStyle(
+                          fontSize: 16, color: App.theme.mutedLightColor),
                       contentPadding: EdgeInsets.symmetric(horizontal: 15),
                       border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0), borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                      focusedBorder:
-                          OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0), borderRadius: BorderRadius.circular(10.0)),
-                      enabledBorder:
-                          OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0), borderRadius: BorderRadius.circular(10.0)),
+                          borderSide:
+                              BorderSide(color: Color(0xFF94A3B8), width: 1.0),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0xFF94A3B8), width: 1.0),
+                          borderRadius: BorderRadius.circular(10.0)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0xFF94A3B8), width: 1.0),
+                          borderRadius: BorderRadius.circular(10.0)),
                     ),
                   ),
                   if (_showPasswordError)
@@ -166,13 +182,19 @@ class _ResetPasswordState extends State<ResetPassword> {
 
                               setState(() {
                                 loading = true;
-                                apiProvider.resetPassword(passwordController.text).then(
+                                apiProvider
+                                    .resetPassword(passwordController.text)
+                                    .then(
                                   (success) async {
                                     if (success) {
                                       if (widget.email != null) {
-                                        bool success = await apiProvider.login(widget.email!, passwordController.value.text);
+                                        bool success = await apiProvider.login(
+                                            widget.email!,
+                                            passwordController.value.text,
+                                            context);
                                         if (success) {
-                                          if (App.currentUser.userType == UserTypes.DOCTOR) {
+                                          if (App.currentUser.userType ==
+                                              UserTypes.DOCTOR) {
                                             App.setActiveApp(ActiveApp.DOCTOR);
                                           } else {
                                             App.setActiveApp(ActiveApp.PATIENT);

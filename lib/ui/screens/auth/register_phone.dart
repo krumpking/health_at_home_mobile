@@ -114,14 +114,21 @@ class _RegisterPhoneState extends State<RegisterPhone> {
                               children: [
                                 Text(
                                   error,
-                                  style: TextStyle(fontSize: MediaQuery.of(context).size.height * 0.016, color: Colors.red),
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.016,
+                                      color: Colors.red),
                                 ),
                                 SizedBox(height: 16),
                               ],
                             ),
                           Text(
                             'Phone Number',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: App.theme.grey600),
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: App.theme.grey600),
                           ),
                           SizedBox(height: 4),
                           Row(
@@ -129,8 +136,10 @@ class _RegisterPhoneState extends State<RegisterPhone> {
                               Container(
                                 decoration: BoxDecoration(
                                   color: App.theme.white,
-                                  border: Border.all(color: Color(0xFF94A3B8), width: 1.0),
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  border: Border.all(
+                                      color: Color(0xFF94A3B8), width: 1.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
                                 ),
                                 child: CountryCodePicker(
                                   onChanged: (CountryCode countryCode) {
@@ -157,7 +166,9 @@ class _RegisterPhoneState extends State<RegisterPhone> {
                               Container(
                                 child: Expanded(
                                   child: TextFormField(
-                                    style: TextStyle(fontSize: 18, color: App.theme.darkText),
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: App.theme.darkText),
                                     controller: phoneController,
                                     key: _phoneFieldKey,
                                     validator: (value) {
@@ -167,7 +178,8 @@ class _RegisterPhoneState extends State<RegisterPhone> {
                                       if (value!.isEmpty) {
                                         setState(() {
                                           _showPhoneError = true;
-                                          _phoneError = "Phone number is required";
+                                          _phoneError =
+                                              "Phone number is required";
                                         });
                                       }
                                       return null;
@@ -177,17 +189,34 @@ class _RegisterPhoneState extends State<RegisterPhone> {
                                       fillColor: App.theme.white,
                                       filled: true,
                                       hintText: '712345678',
-                                      hintStyle: TextStyle(fontSize: 18, color: App.theme.mutedLightColor),
-                                      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 14),
+                                      hintStyle: TextStyle(
+                                          fontSize: 18,
+                                          color: App.theme.mutedLightColor),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 14),
                                       border: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0),
-                                          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFF94A3B8),
+                                              width: 1.0),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0))),
                                       errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.red, width: 1.0), borderRadius: BorderRadius.circular(10.0)),
+                                          borderSide: BorderSide(
+                                              color: Colors.red, width: 1.0),
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
                                       focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0), borderRadius: BorderRadius.circular(10.0)),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFF94A3B8),
+                                              width: 1.0),
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
                                       enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0), borderRadius: BorderRadius.circular(10.0)),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFF94A3B8),
+                                              width: 1.0),
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
                                     ),
                                   ),
                                 ),
@@ -215,7 +244,9 @@ class _RegisterPhoneState extends State<RegisterPhone> {
                               : PrimaryLargeButton(
                                   title: 'Complete Account',
                                   onPressed: () {
-                                    if (phoneCode.isNotEmpty && _phoneFieldKey.currentState!.validate()) {
+                                    if (phoneCode.isNotEmpty &&
+                                        _phoneFieldKey.currentState!
+                                            .validate()) {
                                       FocusScope.of(context).unfocus();
 
                                       setState(() {
@@ -229,23 +260,32 @@ class _RegisterPhoneState extends State<RegisterPhone> {
                                         });
                                       }
 
-                                      if (_showPhoneError || _showPhoneCodeError) {
+                                      if (_showPhoneError ||
+                                          _showPhoneCodeError) {
                                         _loading = false;
                                         return;
                                       }
 
-                                      App.signUpUser!.phone = phoneController.value.text;
+                                      App.signUpUser!.phone =
+                                          phoneController.value.text;
                                       App.signUpUser!.phoneCode = phoneCode;
 
                                       try {
                                         apiProvider.register().then(
                                           (uuid) async {
                                             if (uuid != null) {
-                                              bool success = await apiProvider.login(App.signUpUser!.email, App.signUpUser!.password);
+                                              bool success =
+                                                  await apiProvider.login(
+                                                      App.signUpUser!.email,
+                                                      App.signUpUser!.password,
+                                                      context);
                                               if (success) {
                                                 Navigator.pushReplacement(
                                                   context,
-                                                  MaterialPageRoute(builder: (context) => VerifyCode(uuid: uuid)),
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          VerifyCode(
+                                                              uuid: uuid)),
                                                 );
                                               }
                                             } else {
@@ -288,7 +328,8 @@ class _RegisterPhoneState extends State<RegisterPhone> {
               child: SecondaryStandardButton(
                   title: 'Login',
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
                       return Login();
                     }));
                   }),

@@ -70,7 +70,8 @@ class _LoginState extends State<Login> {
     App.onAuthPage = true;
 
     setState(() {
-      emailController.text = User.isAuthentic(App.currentUser) ? App.currentUser.email : '';
+      emailController.text =
+          User.isAuthentic(App.currentUser) ? App.currentUser.email : '';
       _goBack = (widget.goBack == null || widget.goBack!);
     });
     _initPage();
@@ -140,7 +141,8 @@ class _LoginState extends State<Login> {
                             children: [
                               Container(
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     GestureDetector(
                                       child: Icon(
@@ -161,7 +163,8 @@ class _LoginState extends State<Login> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset('assets/icons/logo_light.svg', height: 60),
+                            SvgPicture.asset('assets/icons/logo_light.svg',
+                                height: 60),
                           ],
                         ),
                         SizedBox(height: 30),
@@ -185,18 +188,27 @@ class _LoginState extends State<Login> {
                                   children: [
                                     Text(
                                       error,
-                                      style: TextStyle(fontSize: MediaQuery.of(context).size.height * 0.016, color: Colors.red),
+                                      style: TextStyle(
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.016,
+                                          color: Colors.red),
                                     ),
                                     SizedBox(height: 16),
                                   ],
                                 ),
                               Text(
                                 'Email Address',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: App.theme.grey600),
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: App.theme.grey600),
                               ),
                               SizedBox(height: 4),
                               TextFormField(
-                                style: TextStyle(fontSize: 18, color: App.theme.darkText),
+                                style: TextStyle(
+                                    fontSize: 18, color: App.theme.darkText),
                                 controller: emailController,
                                 key: _emailFieldKey,
                                 keyboardType: TextInputType.emailAddress,
@@ -222,15 +234,26 @@ class _LoginState extends State<Login> {
                                   fillColor: App.theme.white,
                                   filled: true,
                                   hintText: 'john.doe@gmail.com',
-                                  hintStyle: TextStyle(fontSize: 15, color: App.theme.mutedLightColor),
-                                  contentPadding: EdgeInsets.only(left: 15, right: 15),
+                                  hintStyle: TextStyle(
+                                      fontSize: 15,
+                                      color: App.theme.mutedLightColor),
+                                  contentPadding:
+                                      EdgeInsets.only(left: 15, right: 15),
                                   border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0),
-                                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF94A3B8), width: 1.0),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0))),
                                   focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0), borderRadius: BorderRadius.circular(10.0)),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF94A3B8), width: 1.0),
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
                                   enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0), borderRadius: BorderRadius.circular(10.0)),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF94A3B8), width: 1.0),
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
                                 ),
                               ),
                               if (_showEmailError)
@@ -251,11 +274,15 @@ class _LoginState extends State<Login> {
                               SizedBox(height: 16),
                               Text(
                                 'Password',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: App.theme.grey600),
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: App.theme.grey600),
                               ),
                               SizedBox(height: 4),
                               TextFormField(
-                                style: TextStyle(fontSize: 18, color: App.theme.darkText),
+                                style: TextStyle(
+                                    fontSize: 18, color: App.theme.darkText),
                                 controller: passwordController,
                                 key: _passwordFieldKey,
                                 obscureText: _obscureText,
@@ -273,22 +300,35 @@ class _LoginState extends State<Login> {
                                 decoration: InputDecoration(
                                   suffixIcon: IconButton(
                                     icon: _obscureText
-                                        ? Icon(Icons.visibility_rounded, color: App.theme.mutedLightColor)
-                                        : Icon(Icons.visibility_off_rounded, color: App.theme.turquoise),
+                                        ? Icon(Icons.visibility_rounded,
+                                            color: App.theme.mutedLightColor)
+                                        : Icon(Icons.visibility_off_rounded,
+                                            color: App.theme.turquoise),
                                     onPressed: () => {_toggle()},
                                   ),
                                   fillColor: App.theme.white,
                                   filled: true,
                                   hintText: 'Input text here',
-                                  hintStyle: TextStyle(fontSize: 16, color: App.theme.mutedLightColor),
-                                  contentPadding: EdgeInsets.only(left: 15, right: 15),
+                                  hintStyle: TextStyle(
+                                      fontSize: 16,
+                                      color: App.theme.mutedLightColor),
+                                  contentPadding:
+                                      EdgeInsets.only(left: 15, right: 15),
                                   border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0),
-                                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF94A3B8), width: 1.0),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0))),
                                   focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0), borderRadius: BorderRadius.circular(10.0)),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF94A3B8), width: 1.0),
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
                                   enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF94A3B8), width: 1.0), borderRadius: BorderRadius.circular(10.0)),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF94A3B8), width: 1.0),
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
                                 ),
                               ),
                               if (_showPasswordError)
@@ -316,30 +356,52 @@ class _LoginState extends State<Login> {
                                           : PrimaryLargeButton(
                                               title: 'Log In',
                                               onPressed: () async {
-                                                if (_emailFieldKey.currentState!.validate() && _passwordFieldKey.currentState!.validate()) {
-                                                  FocusScope.of(context).unfocus();
+                                                if (_emailFieldKey.currentState!
+                                                        .validate() &&
+                                                    _passwordFieldKey
+                                                        .currentState!
+                                                        .validate()) {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
 
-                                                  if (_showEmailError || _showPasswordError) return;
+                                                  if (_showEmailError ||
+                                                      _showPasswordError)
+                                                    return;
                                                   setState(() {
                                                     loading = true;
                                                   });
                                                   try {
-                                                    var success = await apiProvider.login(emailController.text, passwordController.text);
+                                                    var success =
+                                                        await apiProvider.login(
+                                                            emailController
+                                                                .text,
+                                                            passwordController
+                                                                .text,
+                                                            context);
                                                     if (success) {
-                                                      _storage.write(key: 'isLoggedIn', value: '1');
+                                                      _storage.write(
+                                                          key: 'isLoggedIn',
+                                                          value: '1');
 
                                                       Navigator.pushReplacement(
                                                         context,
                                                         MaterialPageRoute(
                                                           builder: (context) =>
-                                                              (App.currentUser.userType == UserTypes.DOCTOR ? DoctorHome() : Home(0)),
+                                                              (App.currentUser
+                                                                          .userType ==
+                                                                      UserTypes
+                                                                          .DOCTOR
+                                                                  ? DoctorHome()
+                                                                  : Home(0)),
                                                         ),
                                                       );
                                                     } else {
                                                       setState(
                                                         () => {
-                                                          error = ApiResponse.message,
-                                                          ApiResponse.message = '',
+                                                          error = ApiResponse
+                                                              .message,
+                                                          ApiResponse.message =
+                                                              '',
                                                           loading = false,
                                                         },
                                                       );
@@ -347,8 +409,12 @@ class _LoginState extends State<Login> {
                                                   } catch (_error, stack) {
                                                     setState(
                                                       () => {
-                                                        error = _error.toString() + "\n" + stack.toString(),
-                                                        ApiResponse.message = '',
+                                                        error = _error
+                                                                .toString() +
+                                                            "\n" +
+                                                            stack.toString(),
+                                                        ApiResponse.message =
+                                                            '',
                                                         loading = false,
                                                       },
                                                     );
@@ -364,11 +430,15 @@ class _LoginState extends State<Login> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 16),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       'Forgot your Password?',
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: App.theme.grey600),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: App.theme.grey600),
                                     ),
                                     GestureDetector(
                                       child: Text(
@@ -381,7 +451,9 @@ class _LoginState extends State<Login> {
                                         ),
                                       ),
                                       onTap: () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
                                           return ForgotPassword();
                                         }));
                                       },
@@ -404,7 +476,8 @@ class _LoginState extends State<Login> {
                   child: SecondaryLargeButton(
                       title: 'Create an Account',
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
                           return Register();
                         }));
                       }),
@@ -431,20 +504,26 @@ class _LoginState extends State<Login> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => (App.currentUser.userType == UserTypes.DOCTOR ? DoctorHome() : Home(0)),
+            builder: (context) => (App.currentUser.userType == UserTypes.DOCTOR
+                ? DoctorHome()
+                : Home(0)),
           ),
         );
       } else {
         if (User.isAuthentic(App.currentUser) && !App.currentUser.isActive) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => VerifyCode(uuid: App.currentUser.uuid)),
+            MaterialPageRoute(
+                builder: (context) => VerifyCode(uuid: App.currentUser.uuid)),
           );
           return;
         }
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => App.currentUser.userType == UserTypes.DOCTOR ? DoctorHome() : Home(0)),
+          MaterialPageRoute(
+              builder: (context) => App.currentUser.userType == UserTypes.DOCTOR
+                  ? DoctorHome()
+                  : Home(0)),
         );
       }
     } else {
@@ -471,7 +550,8 @@ class _LoginState extends State<Login> {
         return Register(email: email);
       }));
     } else {
-      var success = await apiProvider.loginWithSocial(email, firstName, lastName);
+      var success =
+          await apiProvider.loginWithSocial(email, firstName, lastName);
       if (success) {
         _storage.write(key: 'isLoggedIn', value: '1');
         if (App.currentUser.userType == UserTypes.DOCTOR) {
@@ -483,14 +563,18 @@ class _LoginState extends State<Login> {
         if (User.isAuthentic(App.currentUser) && !App.currentUser.isActive) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => VerifyCode(uuid: App.currentUser.uuid)),
+            MaterialPageRoute(
+                builder: (context) => VerifyCode(uuid: App.currentUser.uuid)),
           );
           return;
         }
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => App.currentUser.userType == UserTypes.DOCTOR ? DoctorHome() : Home(0)),
+          MaterialPageRoute(
+              builder: (context) => App.currentUser.userType == UserTypes.DOCTOR
+                  ? DoctorHome()
+                  : Home(0)),
         );
       } else {
         setState(() {

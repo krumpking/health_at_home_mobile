@@ -25,6 +25,7 @@ import 'package:mobile/models/user/subscription.dart';
 import 'package:mobile/models/user/subscriptionPackage.dart';
 import 'package:mobile/models/user/user.dart';
 import 'package:mobile/providers/utilities.dart';
+import 'package:mobile/ui/screens/auth/verify.code.dart';
 
 import 'api_response.dart';
 
@@ -34,9 +35,14 @@ class ApiProvider extends ChangeNotifier {
   //static const HOST = "http://192.168.0.13:8000/api"; // stg
   http.Client client = http.Client();
   final _storage = FlutterSecureStorage();
-  var headers;
 
   _getDataList(key) async {
+    var br = await App.getToken();
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Authorization': 'Bearer $br'
+    };
     ApiResponse.status = Status.LOADING;
     try {
       final response = await client.get(
@@ -56,13 +62,20 @@ class ApiProvider extends ChangeNotifier {
 
   _postDataList(key, data) async {
     ApiResponse.status = Status.LOADING;
+    var br = await App.getToken();
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $br'
+    };
+
     try {
       final http.Response response = await client.post(
         Uri.parse("$HOST/$key"),
         headers: headers,
         body: jsonEncode(data),
       );
-      print(response);
+
       return ApiResponse.handleApiResponse(response);
     } on TimeoutException catch (_) {
       ApiResponse.message = "connection timed out";
@@ -73,8 +86,9 @@ class ApiProvider extends ChangeNotifier {
     return;
   }
 
-  Future<bool> login(String email, String password) async {
-    setHeaders();
+  Future<bool> login(
+      String email, String password, BuildContext context) async {
+    ;
     final data = await _postDataList('auth/login', {
       'email': email,
       'password': password,
@@ -94,8 +108,12 @@ class ApiProvider extends ChangeNotifier {
           App.signUpUser?.lastName = user.lastName;
           App.signUpUser?.uuid = user.uuid;
           App.signUpUser!.purpose = 1;
-
-          return true;
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => VerifyCode(uuid: user.uuid)),
+          );
+          // return true;
         }
 
         App.currentUser = user;
@@ -113,7 +131,7 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> loginWithUUID(String uuid) async {
-    setHeaders();
+    ;
     final data = await _postDataList(
         'auth/login/uuid', {'uuid': uuid, "deviceKey": App.deviceKey});
     if (ApiResponse.status == Status.COMPLETED) {
@@ -135,7 +153,7 @@ class ApiProvider extends ChangeNotifier {
 
   Future<bool> loginWithSocial(
       String email, String firstName, String lastName) async {
-    setHeaders();
+    ;
     final data = await _postDataList('auth/login/social', {
       'email': email,
       'firstName': firstName,
@@ -160,7 +178,7 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<String?> resendRegistrationCode(String uuid) async {
-    setHeaders();
+    ;
     var data = await _postDataList('auth/resend-registration-code',
         {'uuid': uuid, "deviceKey": App.deviceKey});
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -172,7 +190,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> checkEmail(String email) async {
-    setHeaders();
     var data = await _postDataList('auth/check-email', {'email': email});
     print(data);
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -183,7 +200,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<String?> register() async {
-    setHeaders();
     print(App.signUpUser!.toJson());
     var data = await _postDataList('auth/register', App.signUpUser!.toJson());
     print(data);
@@ -198,7 +214,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<String?> forgotPassword(String email) async {
-    setHeaders();
     var data = await _postDataList('auth/forgot-password', {'email': email});
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
       if (data['uuid'] != null && data['purpose'] != null) {
@@ -211,7 +226,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> resetPassword(String password) async {
-    setHeaders();
     var data = await _postDataList('auth/reset-password', {
       'uuid': App.signUpUser!.uuid,
       'newPassword': password,
@@ -221,14 +235,12 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> verifyCode(String code, String uuid, int purpose) async {
-    setHeaders();
     var data = await _postDataList(
         'auth/verify-code', {'uuid': uuid, 'code': code, 'purpose': purpose});
     return (ApiResponse.status == Status.COMPLETED && data['success'] == true);
   }
 
   Future<bool> updateDoctorProfile() async {
-    setHeaders();
     var data = await _postDataList(
         'doctor/profile/update', App.currentUser.doctorProfile!.toJson());
     await refreshUser();
@@ -236,7 +248,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<SavedAddress?> getPatientSavedAddress() async {
-    setHeaders();
     var data = await _postDataList('patient/get-saved-address',
         {'patientProfileId': App.currentUser.patientProfile!.id});
     await refreshUser();
@@ -253,7 +264,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<SavedAddress?> getDoctorSavedAddress() async {
-    setHeaders();
     var data = await _postDataList('doctor/get-saved-address',
         {'doctorProfileId': App.currentUser.doctorProfile!.id});
     await refreshUser();
@@ -270,7 +280,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<String?> uploadDoctorImage(File image) async {
-    setHeaders();
     var data = await _postDataList('doctor/profile/update-image', {
       'doctorProfileId': App.currentUser.doctorProfile!.id,
       'image': 'data:image/' +
@@ -290,7 +299,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> updatePatientProfile() async {
-    setHeaders();
     var data = await _postDataList(
         'patient/profile/update', App.currentUser.patientProfile!.toJson());
     await refreshUser();
@@ -298,7 +306,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<SavedAddress?> createUpdateDoctorAddress() async {
-    setHeaders();
     var data = await _postDataList('doctor/address-post',
         App.currentUser.doctorProfile!.savedAddress!.toJson());
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -309,7 +316,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> updateDoctorPreferences() async {
-    setHeaders();
     var data = await _postDataList('doctor/preferences',
         App.currentUser.doctorProfile!.preferences!.toJson());
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -321,7 +327,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<SavedAddress?> createUpdatePatientAddress() async {
-    setHeaders();
     var data = await _postDataList('patient/address-post',
         App.currentUser.patientProfile!.savedAddress!.toJson());
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -332,7 +337,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> updatePatientPreferences() async {
-    setHeaders();
     var data = await _postDataList('patient/preferences',
         App.currentUser.patientProfile!.preferences!.toJson());
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -344,13 +348,11 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> redeemCode(dynamic payload) async {
-    setHeaders();
     var data = await _postDataList('patient/redeem-code', payload);
     return (ApiResponse.status == Status.COMPLETED && data['success'] == true);
   }
 
   Future<Booking?> createBooking() async {
-    setHeaders();
     var data =
         await _postDataList('booking/create', App.progressBooking!.toJson());
     await refreshUser();
@@ -361,7 +363,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<BookingTravel?> updateBookingTravel(dynamic) async {
-    setHeaders();
     var data = await _postDataList('doctor/update-booking-travel', dynamic);
     if (data != null &&
         ApiResponse.status == Status.COMPLETED &&
@@ -373,7 +374,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<Booking?> getBooking(int bookingId) async {
-    setHeaders();
     var data = await _getDataList(
         'app/get-single-booking?bookingId=' + bookingId.toString());
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -383,7 +383,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<BookingTravel?> getBookingTravel(int bookingId) async {
-    setHeaders();
     var data = await _getDataList(
         'app/get-booking-travel?bookingId=' + bookingId.toString());
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -393,7 +392,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> deleteAccount(int userId) async {
-    setHeaders();
     var data = await _postDataList('app/delete-account', {'user_id': userId});
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
       return true;
@@ -403,7 +401,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<Dependent?> createDependent(Dependent dependent) async {
-    setHeaders();
     var data = await _postDataList(
         'patient/create-dependent', dependent.toJsonCreate());
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -413,13 +410,11 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> deleteDependent(int id) async {
-    setHeaders();
     var data = await _postDataList('patient/delete-dependent', {'id': id});
     return (ApiResponse.status == Status.COMPLETED && data['success'] == true);
   }
 
   Future<List<Booking>?> getPatientBookings() async {
-    setHeaders();
     var data = await _postDataList('patient/bookings',
         {'patientProfileId': App.currentUser.patientProfile!.id});
     if (ApiResponse.status == Status.COMPLETED) {
@@ -429,7 +424,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<AppSetting?> getAppSettings() async {
-    setHeaders();
     var data = await _getDataList('app/get-settings');
     if (ApiResponse.status == Status.COMPLETED) {
       return AppSetting.fromJson(data['result']);
@@ -438,7 +432,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<List<Booking>?> getDoctorBookings() async {
-    setHeaders();
     var data = await _postDataList('doctor/bookings',
         {'doctorProfileId': App.currentUser.doctorProfile!.id});
     if (ApiResponse.status == Status.COMPLETED) {
@@ -451,7 +444,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<List<Dependent>?> getDependents() async {
-    setHeaders();
     var data = await _postDataList('patient/get-dependents',
         {'patientProfileId': App.currentUser.patientProfile!.id});
     if (ApiResponse.status == Status.COMPLETED) {
@@ -463,7 +455,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<List<SubscriptionPackage>?> getAvailablePackages() async {
-    setHeaders();
     var data = await _getDataList('subscriptions/get-all-packages');
     if (ApiResponse.status == Status.COMPLETED) {
       return data['result']
@@ -475,7 +466,6 @@ class ApiProvider extends ChangeNotifier {
 
   Future<List<Dependent>?> getSubscriptionBeneficiaries(
       Subscription subscription) async {
-    setHeaders();
     var data = await _postDataList(
         'subscriptions/get-dependencies', {'subscriptionId': subscription.id});
     var logger = new Logger();
@@ -490,7 +480,6 @@ class ApiProvider extends ChangeNotifier {
 
   Future<List<Dependent>?> setSubscriptionBeneficiaries(
       Subscription subscription, List<int> beneficiaries) async {
-    setHeaders();
     var data = await _postDataList('subscriptions/set-dependencies', {
       'subscriptionId': subscription.id,
       'dependencies': jsonEncode(beneficiaries)
@@ -506,7 +495,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<Subscription?> subscribe({required int packageId}) async {
-    setHeaders();
     var data = await _postDataList('subscriptions/subscribe',
         {'packageId': packageId, 'userId': App.currentUser.id});
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -518,7 +506,6 @@ class ApiProvider extends ChangeNotifier {
 
   Future<dynamic> checkPaymentStatus(
       {required int paymentId, required String type}) async {
-    setHeaders();
     var data = await _postDataList(
         'payment/status', {'paymentId': paymentId, 'type': type});
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -534,7 +521,6 @@ class ApiProvider extends ChangeNotifier {
     required String method,
     required bool isRenewal,
   }) async {
-    setHeaders();
     var data = await _postDataList('payment/subscription', {
       'packageId': subscriptionPackage.id,
       'dependantId': dependant.id,
@@ -551,7 +537,6 @@ class ApiProvider extends ChangeNotifier {
 
   Future<dynamic> unSubscription(
       {required int subscriptionId, required int dependantId}) async {
-    setHeaders();
     var data = await _postDataList('subscriptions/un-subscribe',
         {'subscriptionId': subscriptionId, 'dependantId': dependantId});
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
@@ -564,7 +549,6 @@ class ApiProvider extends ChangeNotifier {
     required int bookingId,
     required String method,
   }) async {
-    setHeaders();
     var data = await _postDataList('payment/booking', {
       'bookingId': bookingId,
       'method': method,
@@ -576,7 +560,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<Subscription?> getSubscription({required int id}) async {
-    setHeaders();
     var data = await _getDataList('subscriptions/$id');
     if (ApiResponse.status == Status.COMPLETED && data['success'] == true) {
       await refreshUser();
@@ -586,7 +569,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<List<BookingNotification>?> getNotifications() async {
-    setHeaders();
     var data = await _postDataList(
         'app/get-notifications', {'userId': App.currentUser.id});
     if (ApiResponse.status == Status.COMPLETED) {
@@ -598,7 +580,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<Booking?> getActiveTravel() async {
-    setHeaders();
     var data = await _postDataList('doctor/get-active-travel',
         {'doctorProfileId': App.currentUser.doctorProfile!.id});
     if (ApiResponse.status == Status.COMPLETED) {
@@ -608,13 +589,11 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> openNotification(int id) async {
-    setHeaders();
     await _postDataList('app/open-notifications', {'notificationId': id});
     return (ApiResponse.status == Status.COMPLETED);
   }
 
   Future<bool> updateWorkHours() async {
-    setHeaders();
     await _postDataList('doctor/profile/update-work-hours', {
       'doctorProfileId': App.currentUser.doctorProfile!.id,
       'times': Utilities.getJsonWorkHours()
@@ -623,7 +602,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<BookingReport?> createReport() async {
-    setHeaders();
     var data = await _postDataList(
         'doctor/create-report', App.progressReport.toJson());
     App.progressReport = BookingReport.init();
@@ -634,7 +612,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<PatientReport?> createPatientReport() async {
-    setHeaders();
     var data = await _postDataList(
         'patient/create-report', App.patientReport.toJson());
     if (ApiResponse.status == Status.COMPLETED && data['success']) {
@@ -645,7 +622,6 @@ class ApiProvider extends ChangeNotifier {
 
   Future<List<String>?> getAvailabilities(
       int doctorProfileId, String date) async {
-    setHeaders();
     var data = await _postDataList('doctor/availability',
         {"date": date, "doctorProfileId": doctorProfileId});
     if (ApiResponse.status == Status.COMPLETED) {
@@ -655,7 +631,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> updateDoctorBookingStatus(dynamic) async {
-    setHeaders();
     var data = await _postDataList('doctor/update-booking-status', dynamic);
     if (ApiResponse.status == Status.COMPLETED) {
       if (data['result'] != null) {
@@ -669,7 +644,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> updatePatientBookingStatus(dynamic) async {
-    setHeaders();
     var data = await _postDataList('patient/update-booking-status', dynamic);
     if (ApiResponse.status == Status.COMPLETED) {
       if (data['result'] != null) {
@@ -683,7 +657,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<bool> claimAppointment(dynamic) async {
-    setHeaders();
     var data = await _postDataList('doctor/claim-appointment', dynamic);
     if (ApiResponse.status == Status.COMPLETED) {
       if (data['result'] != null) {
@@ -697,7 +670,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<List<DoctorProfile>?> getAllDoctors(dynamic search) async {
-    setHeaders();
     search = search == null ? {} : search;
     var data = await _postDataList('doctor/list', search);
     if (ApiResponse.status == Status.COMPLETED) {
@@ -711,11 +683,8 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<List<Service>?> getServices() async {
-    setHeaders();
     final data = await _getDataList('services');
     if (ApiResponse.status == Status.COMPLETED) {
-      print("============= SERVICES ===========");
-      print(data);
       App.services =
           data['result'].map<Service>((p) => Service.fromJson(p)).toList();
       return App.services;
@@ -724,7 +693,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<List<Service>?> getSecondaryServices(int serviceId) async {
-    setHeaders();
     final data =
         await _postDataList('additional-services', {'serviceId': serviceId});
     if (ApiResponse.status == Status.COMPLETED) {
@@ -734,7 +702,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future refreshUser() async {
-    setHeaders();
     final data = await _postDataList('auth/user', {'id': App.currentUser.id});
     var logger = Logger();
     logger.wtf('Here');
@@ -748,7 +715,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<List<Language>?> getLanguages() async {
-    setHeaders();
     final data = await _getDataList('app/get-languages');
     if (ApiResponse.status == Status.COMPLETED) {
       App.languages =
@@ -759,7 +725,6 @@ class ApiProvider extends ChangeNotifier {
   }
 
   Future<List<Specialisation>?> getSpecialisations() async {
-    setHeaders();
     final data = await _getDataList('app/get-specialisations');
     if (ApiResponse.status == Status.COMPLETED) {
       App.specialisations = data['result']
@@ -768,12 +733,5 @@ class ApiProvider extends ChangeNotifier {
       return App.specialisations;
     }
     return null;
-  }
-
-  setHeaders() {
-    headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
   }
 }

@@ -306,7 +306,9 @@ class _DoctorsState extends State<Doctors> {
                                                       ),
                                                       SizedBox(width: 8),
                                                       Text(
-                                                        doctorHasLocation
+                                                        doctorHasLocation &&
+                                                                App.currentLocation !=
+                                                                    null
                                                             ? doctorProfile
                                                                 .getDistance(
                                                                     LatLng(
